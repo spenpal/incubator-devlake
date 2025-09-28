@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '3.8'
 services:
   devcontainer:
     build:
@@ -39,6 +38,20 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --skip-log-bin
     networks:
       - default
+  postgres:
+    image: postgres:17.2
+    volumes:
+      - postgres-storage:/var/lib/postgresql
+    restart: always
+    ports:
+      - 5433:5432 # Different port to avoid conflicts
+    environment:
+      POSTGRES_DB: lake
+      POSTGRES_USER: merico
+      POSTGRES_PASSWORD: merico
+      TZ: UTC
+    networks:
+      - default
   grafana:
     image: devlake.docker.scarf.sh/apache/devlake-dashboard:latest
     ports:
@@ -61,4 +74,5 @@ services:
 
 volumes:
   mysql-storage:
+  postgres-storage:
   grafana-storage:

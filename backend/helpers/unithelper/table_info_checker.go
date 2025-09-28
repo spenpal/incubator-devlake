@@ -112,7 +112,12 @@ func (checker *TableInfoChecker) Verify() errors.Error {
 	return errors.Default.New(sb.String())
 }
 
+// TODO: Migrate from deprecated ast.Package to go/types package when upgrading to Go 2.x
+// See: https://pkg.go.dev/go/types for modern type checking approach
+//
+//nolint:staticcheck // SA1019: ast.Package deprecated since Go 1.22, will migrate in future Go version upgrade
 func (checker *TableInfoChecker) parseDirRecursively(modelsDir string, additionalIgnorablePackages ...string) (map[string]*ast.Package, error) {
+	//nolint:staticcheck // SA1019: ast.Package deprecated since Go 1.22, part of planned migration
 	packagesMap := make(map[string]*ast.Package)
 	ignorablePackages := append(checker.ignoredPackages, additionalIgnorablePackages...)
 	err := filepath.WalkDir(modelsDir, func(path string, d fs2.DirEntry, err error) error {
@@ -143,6 +148,7 @@ func (checker *TableInfoChecker) parseDirRecursively(modelsDir string, additiona
 	return packagesMap, nil
 }
 
+//nolint:staticcheck // SA1019: ast.Package deprecated since Go 1.22, part of planned migration
 func (checker *TableInfoChecker) getTableNameFuncs(pks map[string]*ast.Package) []*ast.FuncDecl {
 	var funcs []*ast.FuncDecl
 	for _, pack := range pks {
